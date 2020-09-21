@@ -29,7 +29,7 @@ class Company(SiteModelMixin, BaseUuidModel):
     objects = CompanyManager()
 
     def __str__(self):
-        return f'{self.tax_registration}'
+        return f'{self.name}, {self.tax_registration}'
 
     def natural_key(self):
         return (self.tax_registration,)

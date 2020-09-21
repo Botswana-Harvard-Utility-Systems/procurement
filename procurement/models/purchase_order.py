@@ -9,6 +9,7 @@ from .study_protocol import StudyProtocol
 from .model_mixins import PurchaseItemMixin
 from .company import Company
 from .supplier import Supplier
+from ..identifiers import PurchaseOrderIdentifier
 
 
 class PurchaseOrderManager(models.Manager):
@@ -23,10 +24,12 @@ class PurchaseOrderManager(models.Manager):
 
 class PurchaseOrder(SiteModelMixin, BaseUuidModel):
 
+    identifier_cls = PurchaseOrderIdentifier
+
     order_number = models.CharField(
         verbose_name='Purchase order number',
         max_length=50,
-        unique=True)
+        unique=True,)
 
     order_date = models.DateField(
         verbose_name='Purchase order date',
@@ -49,6 +52,11 @@ class PurchaseOrder(SiteModelMixin, BaseUuidModel):
 
     def natural_key(self):
         return (self.order_number,)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.order_number = self.identifier_cls().identifier
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'procurement'

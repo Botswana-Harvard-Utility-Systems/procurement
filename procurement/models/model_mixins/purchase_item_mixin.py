@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 
 
@@ -12,8 +13,8 @@ class PurchaseItemMixin(models.Model):
     unit_price = models.DecimalField(decimal_places=2, max_digits=10)
 
     discount = models.DecimalField(
-        blank=True, null=True,
         decimal_places=2, max_digits=10,
+        default=Decimal('0.00'),
         help_text='Percentage (%) discount')
 
     total_price_excl = models.DecimalField(decimal_places=2, max_digits=10)

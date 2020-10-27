@@ -4,4 +4,6 @@ from .company_admin import CompanyAdmin
 from .invoice_admin import InvoiceAdmin
 from .study_protocol_admin import StudyProtocolAdmin
 from .purchase_order_admin import PurchaseOrderItemAdmin
+from .purchase_requisition_admin import PurchaseRequisitionAdmin
+from .request_approval_admin import RequestApprovalAdmin
 from .supplier_admin import SupplierAdmin

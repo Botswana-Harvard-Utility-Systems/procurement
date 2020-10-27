@@ -8,7 +8,7 @@ class ReportEmailForm(SiteModelFormMixin, forms.ModelForm):
 
     class Meta:
         model = ReportEmail
-        fields = ['sender_email', 'receipient_email', 'subject', 'message']
+        fields = ['sender_email', 'recipient_email', 'subject', 'message']
         labels = {
             'sender_email': 'From',
             'receipient_email': 'To', }

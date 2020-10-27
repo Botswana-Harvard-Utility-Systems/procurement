@@ -7,7 +7,7 @@ class ReportEmail(SiteModelMixin, BaseUuidModel):
 
     sender_email = models.EmailField()
 
-    receipient_email = models.EmailField()
+    recipient_email = models.EmailField()
 
     subject = models.CharField(max_length=250)
 

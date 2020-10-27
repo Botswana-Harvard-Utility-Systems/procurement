@@ -52,7 +52,7 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     vendor = models.ForeignKey(Supplier, on_delete=models.PROTECT)
 
-    agent = models.ForeignKey(User, on_delete=models.CASCADE)
+    agent = models.ForeignKey(User, on_delete=models.PROTECT)
 
     bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
 

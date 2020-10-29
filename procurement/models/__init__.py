@@ -8,3 +8,4 @@ from .report_email import ReportEmail
 from .request_approval import RequestApproval
 from .study_protocol import StudyProtocol
 from .supplier import Supplier
+from .signals import request_approval_on_post_save

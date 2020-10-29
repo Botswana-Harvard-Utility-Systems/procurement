@@ -11,12 +11,16 @@ class RequestApprovalForm(SiteModelFormMixin, forms.ModelForm):
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
         required=False)
 
-    prf_number = forms.CharField(
-        label='Purchase requisition number',
+    document_id = forms.CharField(
+        label='Document Id',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
     request_by = forms.CharField(
         label='Requested by',
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
+    status = forms.CharField(
+        label='Status',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
     class Meta:

@@ -13,3 +13,9 @@ CURRENCY = (
     ('usd', 'USD'),
     ('eur', 'EUR')
 )
+
+DOC_STATUS = (
+    ('new', 'New'),
+    ('pending', 'Pending'),
+    ('approved', 'Approved')
+)

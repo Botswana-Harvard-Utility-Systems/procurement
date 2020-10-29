@@ -17,10 +17,11 @@ class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('rfa_number',
-                       'prf_number',
+                       'document_id',
                        'request_by',
                        'request_to',
-                       'approval_sign'),
+                       'approval_sign',
+                       'status'),
         }),
         audit_fieldset_tuple)
 

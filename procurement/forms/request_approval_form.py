@@ -6,11 +6,6 @@ from ..models import RequestApproval
 
 class RequestApprovalForm(SiteModelFormMixin, forms.ModelForm):
 
-    rfa_number = forms.CharField(
-        label='Request approval number',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        required=False)
-
     document_id = forms.CharField(
         label='Document Id',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))

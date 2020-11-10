@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -51,10 +52,8 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
 
-    request_by = models.CharField(
-        verbose_name='Requested by',
-        max_length=100,
-        help_text='First and Last name')
+    request_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     approval_by = models.CharField(
         verbose_name='Approved by',

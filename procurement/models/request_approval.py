@@ -6,11 +6,6 @@ from edc_base.sites import SiteModelMixin
 
 class RequestApproval(SiteModelMixin, BaseUuidModel):
 
-    rfa_number = models.CharField(
-        verbose_name='Request for approval Id',
-        max_length=50,
-        unique=True, )
-
     document_id = models.CharField(
         verbose_name='Document Id',
         max_length=50, )

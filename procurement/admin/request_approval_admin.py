@@ -16,8 +16,7 @@ class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('rfa_number',
-                       'document_id',
+            'fields': ('document_id',
                        'request_by',
                        'request_to',
                        'approval_sign',
@@ -25,4 +24,4 @@ class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         audit_fieldset_tuple)
 
-    search_fields = ['rfa_number', 'request_by', 'request_to', ]
+    search_fields = ['document_id', 'request_by', 'request_to', ]

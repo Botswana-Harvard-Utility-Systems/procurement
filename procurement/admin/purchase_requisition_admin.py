@@ -53,12 +53,19 @@ class PurchaseRequisitionAdmin(ModelAdminMixin, admin.ModelAdmin):
                        'req_date',
                        'bhp_allocation',
                        'reason',
-                       'request_by',
                        'approval_by',
-                       'funds_confirmed'),
+                       'funds_confirmed',
+                       'request_by',),
         }),
         audit_fieldset_tuple)
 
     search_fields = ['prf_number', 'bhp_allocation', 'request_by', ]
 
     autocomplete_fields = ['bhp_allocation', ]
+
+    readonly_fields = ['request_by', ]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.request_by = request.user
+        obj.save()

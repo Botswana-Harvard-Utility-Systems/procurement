@@ -62,6 +62,8 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         blank=True,
         null=True,)
 
+    approved = models.BooleanField(default=False, editable=False)
+
     funds_confirmed = models.CharField(
         verbose_name='Availability of funds confirmed by',
         max_length=100,

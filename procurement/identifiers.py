@@ -10,3 +10,9 @@ class PurchaseRequisitionIdentifier(SimpleUniqueIdentifier):
     random_string_length = 8
     identifier_type = 'prfid'
     template = 'PRF{device_id}{random_string}'
+
+
+class VendorJustificationIdentifier(SimpleUniqueIdentifier):
+    random_string_length = 4
+    identifier_type = 'vjid'
+    template = 'VJ{device_id}{random_string}'

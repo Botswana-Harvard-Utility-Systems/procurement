@@ -7,3 +7,4 @@ from .purchase_order_admin import PurchaseOrderItemAdmin
 from .purchase_requisition_admin import PurchaseRequisitionAdmin
 from .request_approval_admin import RequestApprovalAdmin
 from .supplier_admin import SupplierAdmin
+from .vendor_justification_admin import VendorJustificationAdmin

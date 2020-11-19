@@ -9,3 +9,4 @@ from .purchase_requisition_form import PurchaseRequisitionForm, PurchaseRequisit
 from .purchase_requisition_form import QuotationForm
 from .request_approval_form import RequestApprovalForm
 from .supplier_form import SupplierForm
+from .vendor_justification_form import VendorJustificationForm, CompetitveBidForm

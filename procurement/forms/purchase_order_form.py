@@ -14,6 +14,10 @@ class PurchaseOrderForm(SiteModelFormMixin, forms.ModelForm):
         label='Purchase order number',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
+    prf_number = forms.CharField(
+        label='Purchase requisition number',
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
     class Meta:
         model = PurchaseOrder
         fields = '__all__'

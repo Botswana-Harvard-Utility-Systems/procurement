@@ -1,13 +1,14 @@
 from django.contrib import admin
 from edc_model_admin.model_admin_audit_fields_mixin import (
     audit_fieldset_tuple)
-from edc_model_admin import TabularInlineMixin
+from edc_model_admin import StackedInlineMixin, TabularInlineMixin
 
 from .modeladmin_mixins import ModelAdminMixin
 
 from ..admin_site import procurement_admin
 from ..forms import PurchaseRequisitionForm, PurchaseRequisitionItemForm
-from ..forms import QuotationForm
+from ..forms import AllocationForm, QuotationForm
+from ..models import Allocation
 from ..models import PurchaseRequisition, PurchaseRequisitionItem, Quotation
 
 
@@ -41,27 +42,42 @@ class QuotationAdmin(TabularInlineMixin, admin.TabularInline):
         )
 
 
+class AllocationAdmin(StackedInlineMixin, admin.StackedInline):
+    model = Allocation
+    form = AllocationForm
+    extra = 1
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'bhp_allocation',
+                'percentage', )}),
+        )
+
+    autocomplete_fields = ['bhp_allocation', ]
+
+
 @admin.register(PurchaseRequisition, site=procurement_admin)
 class PurchaseRequisitionAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     form = PurchaseRequisitionForm
-    inlines = [PurchaseRequisitionItemAdmin, QuotationAdmin]
+    inlines = [AllocationAdmin, PurchaseRequisitionItemAdmin, QuotationAdmin]
 
     fieldsets = (
         (None, {
             'fields': ('prf_number',
                        'req_date',
-                       'bhp_allocation',
                        'reason',
+                       'allocation_type',
                        'approval_by',
                        'funds_confirmed',
                        'request_by',),
         }),
         audit_fieldset_tuple)
 
-    search_fields = ['prf_number', 'bhp_allocation', 'request_by', ]
+    radio_fields = {'allocation_type': admin.VERTICAL}
 
-    autocomplete_fields = ['bhp_allocation', ]
+    search_fields = ['prf_number', 'request_by', ]
 
     readonly_fields = ['request_by', ]
 

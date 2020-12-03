@@ -1,4 +1,5 @@
-
+SPLIT = 'split'
+SOLE = 'sole'
 
 SUPPLIER_GROUP = (
     ('bwp_suppliers', 'BWP Suppliers'),
@@ -27,4 +28,9 @@ NOT_LOWEST_BID = (
      'of alternative vendors (poor service level, unavailability of parts etc).'),
     ('sole_source',
      'Sole Source (no other company is known to be capable of fully satisfying requirements)')
+)
+
+ALLOCATION_TYPE = (
+    (SOLE, 'Sole'),
+    (SPLIT, 'Split'),
 )

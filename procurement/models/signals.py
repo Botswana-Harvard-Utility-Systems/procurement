@@ -49,7 +49,15 @@ def send_email_notification(
             email=instance.request_to.email, success_status=True)
         RequestApproval.objects.filter(
             document_id=instance.document_id).update(status=status)
-        update_prf_approval_by(instance.document_id, instance.request_to)
+        if status == 'pending':
+            value = f'{instance.request_to.first_name} {instance.request_to.last_name}'
+            update_prf_field(
+                prf_number=instance.document_id, field_name='approval_by',
+                value=value)
+        elif status == 'approved':
+            update_prf_field(
+                prf_number=instance.document_id, field_name='approved',
+                value=True)
 
 
 def check_user(user):
@@ -61,11 +69,11 @@ def check_user(user):
     return user
 
 
-def update_prf_approval_by(prf_number=None, approval_by=None):
+def update_prf_field(prf_number=None, field_name=None, value=None):
     try:
         prf = PurchaseRequisition.objects.get(prf_number=prf_number)
     except PurchaseRequisition.DoesNotExist:
         raise ValidationError('Purchase Requisition matching id does not exist')
     else:
-        prf.approval_by = f'{approval_by.first_name} {approval_by.last_name}'
+        setattr(prf, field_name, value)
         prf.save()

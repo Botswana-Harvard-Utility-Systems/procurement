@@ -4,11 +4,9 @@ from edc_list_data import PreloadData
 list_data = {
     'procurement.costanalysis': [
         ('compares_favorable',
-         ('The quoted price compares favorably to previous prices paid for the'
-          ' same or similar items on payment voucher no. ______')),
+         ('The quoted price compares favorably to previous prices paid')),
         ('incorporates_discounts',
-         ('The quoted price incorporate discounts not available to the general'
-          ' public and reflect substantial savings.')),
+         ('The quoted price incorporate discounts')),
         (OTHER, 'Other (i.e Cost Analysis for other considerations)')
     ],
 }

@@ -9,6 +9,7 @@ from edc_search.model_mixins import SearchSlugModelMixin as Base
 
 from .study_protocol import StudyProtocol
 from .model_mixins import PurchaseItemMixin
+from ..choices import ALLOCATION_TYPE
 from ..identifiers import PurchaseRequisitionIdentifier
 
 
@@ -50,7 +51,9 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         verbose_name='Reason for request',
         max_length=100)
 
-    bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
+    allocation_type = models.CharField(
+        choices=ALLOCATION_TYPE,
+        max_length=5)
 
     request_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -90,6 +93,21 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         app_label = 'procurement'
 
 
+class Allocation(BaseUuidModel):
+
+    purchase_req = models.ForeignKey(PurchaseRequisition, on_delete=models.PROTECT)
+
+    bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
+
+    percentage = models.DecimalField(decimal_places=2, max_digits=10)
+
+    def __str__(self):
+        return f'{self.bhp_allocation.name}, {self.percentage}%'
+
+    class Meta:
+        app_label = 'procurement'
+
+
 class Quotation(BaseUuidModel):
 
     purchase_req = models.ForeignKey(PurchaseRequisition, on_delete=models.CASCADE)
@@ -105,7 +123,7 @@ class Quotation(BaseUuidModel):
 
 class PurchaseRequisitionItem(PurchaseItemMixin, BaseUuidModel):
 
-    purchase_req = models.ForeignKey(PurchaseRequisition, on_delete=models.PROTECT)
+    purchase_req = models.ForeignKey(PurchaseRequisition, on_delete=models.CASCADE)
 
     class Meta:
         app_label = 'procurement'

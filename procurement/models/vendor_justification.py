@@ -17,7 +17,7 @@ class SearchSlugModelMixin(Base):
 
     def get_search_slug_fields(self):
         fields = super().get_search_slug_fields()
-        fields.append('vj_number')
+        fields.append('justification_number')
         return fields
 
     class Meta:

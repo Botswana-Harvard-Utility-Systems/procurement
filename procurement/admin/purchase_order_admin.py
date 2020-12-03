@@ -38,6 +38,7 @@ class PurchaseOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('order_number',
+                       'prf_number',
                        'order_date',
                        'agent',
                        'company',
@@ -46,6 +47,6 @@ class PurchaseOrderAdmin(ModelAdminMixin, admin.ModelAdmin):
         }),
         audit_fieldset_tuple)
 
-    search_fields = ['order_number', 'vendor', 'agent', 'bhp_allocation', ]
+    search_fields = ['order_number', 'vendor', 'bhp_allocation', ]
 
     autocomplete_fields = ['company', 'bhp_allocation', 'vendor']

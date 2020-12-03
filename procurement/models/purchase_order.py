@@ -44,6 +44,10 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         max_length=50,
         unique=True,)
 
+    prf_number = models.CharField(
+        verbose_name='Purchase requisition number',
+        max_length=50,)
+
     order_date = models.DateField(
         verbose_name='Purchase order date',
         default=get_utcnow)

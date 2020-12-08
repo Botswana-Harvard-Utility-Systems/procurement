@@ -33,15 +33,19 @@ class VendorJustificationAdmin(ModelAdminMixin, admin.ModelAdmin):
     inlines = [CompetitiveBidAdmin]
 
     fieldsets = (
-        ('Section A', {
+        (None, {
             'fields': ('justification_number',
                        'prf_number',
                        'date',
-                       'selected_vendor',
-                       'not_lowest_bid',
+                       'selected_vendor', ),
+            }),
+        ('Section A: Lowest Competitive Bidder', {
+            'fields': ('not_lowest_bid',
                        'selected_source_explain',
-                       'sole_source_explain',
-                       'cost_analysis',
+                       'sole_source_explain', ),
+            }),
+        ('Section B: Cost/Price Analysis', {
+            'fields': ('cost_analysis',
                        'voucher_no',
                        'cost_analysis_other'),
         }),

@@ -18,7 +18,8 @@ CURRENCY = (
 DOC_STATUS = (
     ('new', 'New'),
     ('pending', 'Pending'),
-    ('approved', 'Approved')
+    ('rejected', 'Rejected'),
+    ('approved', 'Approved'),
 )
 
 NOT_LOWEST_BID = (

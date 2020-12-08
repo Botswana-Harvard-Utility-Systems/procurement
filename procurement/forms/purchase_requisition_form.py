@@ -64,7 +64,7 @@ class PurchaseRequisitionForm(
 
     def check_allocation_percentages(self, all_type, allocations_total):
         percentage = self.data.get('allocation_set-0-percentage')
-        if all_type == SOLE and int(percentage) != 100:
+        if all_type == SOLE and int(float(percentage)) != 100:
             msg = {'allocation_type':
                    'Funds are sourced from a single study, percentage should be 100%.'}
             raise forms.ValidationError(msg)
@@ -72,7 +72,7 @@ class PurchaseRequisitionForm(
             percentage = 0
             for num in range(int(allocations_total)):
                 set_field = f'allocation_set-{num}-percentage'
-                percentage += int(self.data.get(set_field))
+                percentage += int(float(self.data.get(set_field)))
             if percentage != 100:
                 msg = {'allocation_type':
                        ('Percentage allocation across studies should sum to 100%, '

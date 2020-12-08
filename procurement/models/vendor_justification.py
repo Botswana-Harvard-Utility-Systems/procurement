@@ -106,8 +106,5 @@ class CompetitiveBid(BaseUuidModel):
 
     bid_price = models.DecimalField(decimal_places=2, max_digits=10)
 
-    def __str__(self):
-        return f'{self.purchase_req.prf_number}'
-
     class Meta:
         app_label = 'procurement'

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -7,8 +6,9 @@ from edc_base.utils import get_utcnow
 from edc_search.model_mixins import SearchSlugManager
 from edc_search.model_mixins import SearchSlugModelMixin as Base
 
-from .study_protocol import StudyProtocol
 from .model_mixins import PurchaseItemMixin
+from .proxy_user import ProxyUser
+from .study_protocol import StudyProtocol
 from ..choices import ALLOCATION_TYPE
 from ..identifiers import PurchaseRequisitionIdentifier
 
@@ -56,7 +56,7 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         max_length=5)
 
     request_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        ProxyUser, on_delete=models.CASCADE)
 
     approval_by = models.CharField(
         verbose_name='Approved by',

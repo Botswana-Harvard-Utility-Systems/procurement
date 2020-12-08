@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -56,7 +56,7 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     vendor = models.ForeignKey(Supplier, on_delete=models.PROTECT)
 
-    agent = models.ForeignKey(User, on_delete=models.PROTECT)
+    agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
     bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
 

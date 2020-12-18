@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
@@ -6,8 +5,22 @@ from django.dispatch import receiver
 from smtplib import SMTPException
 
 from bhp_personnel.models import Notifications
+from .proxy_user import ProxyUser
 from .purchase_requisition import PurchaseRequisition
-from .request_approval import Request
+from .request_approval import Request, RequestApproval
+
+
+@receiver(post_save, weak=False, sender=PurchaseRequisition)
+def create_request_approval(sender, instance, raw, created, **kwargs):
+    if not raw:
+        if created:
+            try:
+                RequestApproval.objects.get(
+                    document_id=instance.prf_number)
+            except RequestApproval.DoesNotExist:
+                RequestApproval.objects.create(
+                    document_id=instance.prf_number,
+                    request_by=instance.request_by)
 
 
 @receiver(post_save, weak=False, sender=Request,
@@ -18,8 +31,8 @@ def request_on_post_save(sender, instance, raw, created, **kwargs):
     """
     subject = (f'Approval Request for document no. {instance.request_approval.document_id}')
     if not raw:
+        request_approval = instance.request_approval
         if created:
-            request_approval = instance.request_approval
             message = (f'Dear {instance.request_to.get_full_name()} \n\n Please note'
                        f' {request_approval.request_by} is requesting your'
                        f' approval for {request_approval.document_id}'
@@ -28,16 +41,16 @@ def request_on_post_save(sender, instance, raw, created, **kwargs):
             from_email = 'adiphoko@bhp.org.bw'
             send_email_notification(
                 instance, subject=subject, message=message, from_email=from_email,
-                to_emails=[instance.request_to.email, ], status='pending')
+                to_emails=[instance.request_to.email, ], status=instance.status)
 
-        elif instance.status == 'pending':
+        elif instance.status == 'approved':
             message = (f'Dear {request_approval.request_by} \n\n Please be informed '
                        f'Document no. {request_approval.document_id} has been approved.')
             from_email = 'adiphoko@bhp.org.bw'
             user = check_user(request_approval.request_by)
             send_email_notification(
                 instance, subject=subject, message=message, from_email=from_email,
-                to_emails=[user.email, ], status='approved')
+                to_emails=[user.email, ], status=instance.status)
 
 
 def send_email_notification(
@@ -49,12 +62,12 @@ def send_email_notification(
     else:
         Notifications.objects.create(
             email=instance.request_to.email, success_status=True)
-        instance.status = status
-        if status == 'pending':
+        if status == 'new':
             value = f'{instance.request_to.first_name} {instance.request_to.last_name}'
+            instance.status = 'pending'
+            instance.save()
             update_prf_field(
-                prf_number=instance.request_approval.document_id, field_name='approval_by',
-                value=value)
+                prf_number=instance.request_approval.document_id, field_name='approval_by', value=value)
         elif status == 'approved':
             update_prf_field(
                 prf_number=instance.request_approval.document_id, field_name='approved',
@@ -62,10 +75,10 @@ def send_email_notification(
 
 
 def check_user(user):
-    if not isinstance(user, User):
+    if not isinstance(user, ProxyUser):
         try:
-            return User.objects.get(username=user)
-        except User.DoesNotExist:
+            return ProxyUser.objects.get(id=user.id)
+        except ProxyUser.DoesNotExist:
             raise ValidationError(f'User does not exist.')
     return user
 

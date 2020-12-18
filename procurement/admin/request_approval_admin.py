@@ -1,5 +1,5 @@
+from django.contrib.auth import get_user
 from django.contrib import admin
-from edc_model_admin import TabularInlineMixin
 from edc_model_admin.model_admin_audit_fields_mixin import (
     audit_fieldset_tuple)
 
@@ -7,17 +7,18 @@ from .modeladmin_mixins import ModelAdminMixin
 
 from ..admin_site import procurement_admin
 from ..forms import RequestApprovalForm, RequestForm
-from ..models import RequestApproval, Request, ProxyUser
+from ..models import RequestApproval, Request
 
 
-class RequestAdmin(TabularInlineMixin, admin.TabularInline):
-    model = Request
+@admin.register(Request, site=procurement_admin)
+class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
+
     form = RequestForm
-    extra = 1
 
     fieldsets = (
         (None, {
             'fields': (
+                'request_approval',
                 'request_to',
                 'date_reviewed',
                 'status',
@@ -26,13 +27,21 @@ class RequestAdmin(TabularInlineMixin, admin.TabularInline):
 
     autocomplete_fields = ['request_to', ]
 
+    def get_readonly_fields(self, request, obj=None):
+        fields = super().get_readonly_fields(request, obj)
+        if request.GET.get('request_approval'):
+            request_by = RequestApproval.objects.get(
+                id=request.GET.get('request_approval')).request_by
+            if get_user(request) == request_by:
+                fields = ('status', ) + fields
+
+        return fields
+
 
 @admin.register(RequestApproval, site=procurement_admin)
 class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     form = RequestApprovalForm
-
-    inlines = [RequestAdmin, ]
 
     fieldsets = (
         (None, {
@@ -42,9 +51,3 @@ class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):
         audit_fieldset_tuple)
 
     search_fields = ['document_id', 'request_by', ]
-
-    def render_change_form(self, request, context, *args, **kwargs):
-        context['adminform'].form.fields['request_by'].queryset = \
-            ProxyUser.objects.filter(id=request.GET.get('request_by'))
-        return super(RequestApprovalAdmin, self).render_change_form(
-            request, context, *args, **kwargs)

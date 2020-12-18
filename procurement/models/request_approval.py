@@ -14,6 +14,9 @@ class RequestApproval(SiteModelMixin, BaseUuidModel):
 
     request_by = models.ForeignKey(ProxyUser, models.PROTECT)
 
+    def __str__(self):
+        return f'{self.document_id}, {self.request_by}'
+
     class Meta:
         app_label = 'procurement'
 
@@ -35,7 +38,8 @@ class Request(BaseUuidModel):
 
     status = models.CharField(
         max_length=8,
-        choices=DOC_STATUS)
+        choices=DOC_STATUS,
+        default='new')
 
     comment = models.CharField(
         max_length=250,
@@ -44,3 +48,5 @@ class Request(BaseUuidModel):
 
     class Meta:
         app_label = 'procurement'
+        unique_together = ('request_approval', 'request_to', 'status')
+        ordering = ('date_reviewed', )

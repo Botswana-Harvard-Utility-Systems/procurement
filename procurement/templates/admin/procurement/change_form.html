@@ -1,0 +1,72 @@
+{% extends 'edc_model_admin/admin/change_form.html' %}
+{% load static %}
+
+{% block extrastyle %}{{ block.super }}
+  
+{% endblock %}
+
+{% block field_sets %}
+
+	{% if purchaserequisition and vendorjustification %}
+		<div class="">
+	
+		<div id="purchaserequisition" class="tabcontent">
+			<div class=''>
+				<label class='heading'>Selected Vendor: </label> {{ vendorjustification.selected_vendor.name }} 
+			</div>
+			<br/>
+			{% if purchaserequisition.allocation_set.all %}
+				<div class=''>
+					<label class='heading'>BHP Allocation: </label>
+					{% for allocation in purchaserequisition.allocation_set.all %}
+					 	{{ allocation.bhp_allocation.name }} ({{allocation.percentage}}%), 
+					{% endfor %}
+				</div>
+			{% endif %}
+			<br/>
+			{% if purchaserequisition.purchaserequisitionitem_set.all %}
+
+				<table class="table table-striped">
+				  <thead>
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Description</th>
+				      <th scope="col">Item Code</th>
+				      <th scope="col">Ordered</th>
+				      <th scope="col">Unit Price</th>
+				      <th scope="col">Disc (%)</th>
+				      <th scope="col">Price (Ex)</th>
+				      <th scope="col">Vat</th>
+				      <th scope="col">Price (Incl)</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+					  {% for item in purchaserequisition.purchaserequisitionitem_set.all %}
+					    <tr>
+					      <th scope="row"></th>
+					      <td>{{item.description}}</td>
+					      <td>{{item.item_code}}</td>
+					      <td>{{item.quantity_ordered}}</td>
+					      <td>{{item.unit_price}}</td>
+					      <td>{{item.discount}}</td>
+					      <td>{{item.total_price_excl}}</td>
+					      <td>{{item.vat}}</td>
+					      <td>{{item.total_price_incl}}</td>
+					    </tr>
+					  {% endfor %}
+				  </tbody>
+				</table>
+			{% endif %}
+		</div>
+	
+		</div>
+		<div class='clearfix'></div>
+	{% endif %}
+
+  {{ block.super }}
+
+{% endblock field_sets %}
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+{% endblock %}

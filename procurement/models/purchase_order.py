@@ -7,10 +7,7 @@ from edc_base.utils import get_utcnow
 from edc_search.model_mixins import SearchSlugManager
 from edc_search.model_mixins import SearchSlugModelMixin as Base
 
-from .study_protocol import StudyProtocol
-from .model_mixins import PurchaseItemMixin
 from .company import Company
-from .supplier import Supplier
 from ..identifiers import PurchaseOrderIdentifier
 
 
@@ -54,11 +51,7 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     company = models.ForeignKey(Company, on_delete=models.PROTECT)
 
-    vendor = models.ForeignKey(Supplier, on_delete=models.PROTECT)
-
     agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
-
-    bhp_allocation = models.ForeignKey(StudyProtocol, on_delete=models.PROTECT)
 
     file = models.FileField(
         upload_to='purchase_orders/', blank=True, null=True)
@@ -77,14 +70,6 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         if not self.id:
             self.order_number = self.identifier_cls().identifier
         super().save(*args, **kwargs)
-
-    class Meta:
-        app_label = 'procurement'
-
-
-class PurchaseOrderItem(PurchaseItemMixin, BaseUuidModel):
-
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.PROTECT)
 
     class Meta:
         app_label = 'procurement'

@@ -1,2 +1,3 @@
 from .base_locator_details_mixin import BaseLocatorDetailsMixin
 from .purchase_item_mixin import PurchaseItemMixin
+from .purchase_order_mixin import PurchaseOrderMixin

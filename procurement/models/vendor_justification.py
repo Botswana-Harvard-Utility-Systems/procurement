@@ -47,8 +47,7 @@ class VendorJustification(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         verbose_name='Purchase requisition number',
         max_length=50)
 
-    date = models.DateField(
-        default=get_utcnow)
+    date = models.DateField(default=get_utcnow)
 
     selected_vendor = models.ForeignKey(Supplier, on_delete=models.PROTECT)
 

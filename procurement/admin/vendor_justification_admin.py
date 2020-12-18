@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth import get_user
 from edc_model_admin.model_admin_audit_fields_mixin import (
     audit_fieldset_tuple)
 from edc_model_admin import TabularInlineMixin
@@ -58,3 +59,9 @@ class VendorJustificationAdmin(ModelAdminMixin, admin.ModelAdmin):
     filter_horizontal = ('cost_analysis', )
 
     radio_fields = {'not_lowest_bid': admin.VERTICAL, }
+
+    def has_change_permission(self, request, obj=None):
+        user_created = obj.user_created if obj else None
+        if user_created and user_created != get_user(request).first_name:
+            return False
+        return True

@@ -62,6 +62,6 @@ class VendorJustificationAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         user_created = obj.user_created if obj else None
-        if user_created and user_created != get_user(request).first_name:
+        if user_created and user_created != get_user(request).username:
             return False
         return True

@@ -70,9 +70,10 @@ class PurchaseRequisitionAdmin(ModelAdminMixin, admin.ModelAdmin):
                        'req_date',
                        'reason',
                        'allocation_type',
+                       'selected_vendor',
+                       'request_by',
                        'approval_by',
-                       'funds_confirmed',
-                       'request_by',),
+                       'funds_confirmed',),
         }),
         audit_fieldset_tuple)
 
@@ -80,15 +81,16 @@ class PurchaseRequisitionAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     search_fields = ['prf_number', 'request_by', ]
 
-    readonly_fields = ['request_by', ]
+    readonly_fields = ['request_by', 'approval_by', 'funds_confirmed', ]
 
     def save_model(self, request, obj, form, change):
         if not change:
-            obj.request_by = request.user
+            obj.request_by = get_user(request)
         obj.save()
+        super().save_model(request, obj, form, change)
 
     def has_change_permission(self, request, obj=None):
         user_created = obj.user_created if obj else None
-        if user_created and user_created != get_user(request).first_name:
+        if user_created and user_created != get_user(request).username:
             return False
         return True

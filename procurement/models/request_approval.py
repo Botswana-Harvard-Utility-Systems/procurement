@@ -1,9 +1,10 @@
 from django.db import models
+from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites import SiteModelMixin
 
 from .proxy_user import ProxyUser
-from ..choices import DOC_STATUS
+from ..choices import DOC_STATUS, REQUEST_REASON
 
 
 class RequestApproval(SiteModelMixin, BaseUuidModel):
@@ -28,7 +29,11 @@ class Request(BaseUuidModel):
 
     request_to = models.ForeignKey(ProxyUser, models.PROTECT)
 
-    date_reviewed = models.DateField()
+    request_reason = models.CharField(
+        max_length=100,
+        choices=REQUEST_REASON)
+
+    date_reviewed = models.DateField(blank=True, null=True)
 
     approval_sign = models.ImageField(
         verbose_name='Approval signature',
@@ -45,6 +50,8 @@ class Request(BaseUuidModel):
         max_length=250,
         blank=True,
         null=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         app_label = 'procurement'

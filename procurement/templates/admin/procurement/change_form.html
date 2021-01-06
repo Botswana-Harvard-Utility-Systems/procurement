@@ -7,12 +7,11 @@
 
 {% block field_sets %}
 
-	{% if purchaserequisition and vendorjustification %}
+	{% if purchaserequisition  %}
 		<div class="">
-	
 		<div id="purchaserequisition" class="tabcontent">
 			<div class=''>
-				<label class='heading'>Selected Vendor: </label> {{ vendorjustification.selected_vendor.name }} 
+				<label class='heading'>Selected Vendor: </label> {{ purchaserequisition.selected_vendor.name }} 
 			</div>
 			<br/>
 			{% if purchaserequisition.allocation_set.all %}
@@ -56,6 +55,15 @@
 					  {% endfor %}
 				  </tbody>
 				</table>
+			{% endif %}
+			<br/>
+			{% if purchaserequisition.quotation_set.all %}
+				{% for quotation in purchaserequisition.quotation_set.all %}
+					<div class='quotations'>
+						<label class='heading'>Quotation {{forloop.counter}}: </label>
+						<a href={{quotation.quotes.url}}>{{quotation.quotes.name}}</a>
+					</div>
+				{% endfor %}
 			{% endif %}
 		</div>
 	

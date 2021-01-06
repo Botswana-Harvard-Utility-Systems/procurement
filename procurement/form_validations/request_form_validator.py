@@ -34,7 +34,10 @@ class RequestFormValidator(FormCalculationsMixin, FormValidator):
             self._errors.update(msg)
             raise ValidationError(msg)
 
-        self.check_justification_exists(prf_number)
+        request_reason = self.cleaned_data.get('request_reason')
+        if request_reason and (request_reason == 'prf_approval'
+                               or request_reason == 'confirm_funds'):
+            self.check_justification_exists(prf_number)
 
         self.check_new_or_pending_request(request_approval)
 

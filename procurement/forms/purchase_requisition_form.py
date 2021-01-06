@@ -18,16 +18,6 @@ class PurchaseRequisitionForm(
         label='Purchase requisition number',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
-    approval_by = forms.CharField(
-        label='Approval by',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        required=False)
-
-    funds_confirmed = forms.CharField(
-        label='Availability of funds confirmed by',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        required=False)
-
     def clean(self):
         cleaned_data = super().clean()
         bhp_allocations = self.data.get('allocation_set-TOTAL_FORMS')
@@ -64,7 +54,7 @@ class PurchaseRequisitionForm(
 
     def check_allocation_percentages(self, all_type, allocations_total):
         percentage = self.data.get('allocation_set-0-percentage')
-        if all_type == SOLE and int(float(percentage)) != 100:
+        if all_type == SOLE and float(percentage) != 100.00:
             msg = {'allocation_type':
                    'Funds are sourced from a single study, percentage should be 100%.'}
             raise forms.ValidationError(msg)
@@ -72,8 +62,8 @@ class PurchaseRequisitionForm(
             percentage = 0
             for num in range(int(allocations_total)):
                 set_field = f'allocation_set-{num}-percentage'
-                percentage += int(float(self.data.get(set_field)))
-            if percentage != 100:
+                percentage += float(self.data.get(set_field))
+            if percentage != 100.00:
                 msg = {'allocation_type':
                        ('Percentage allocation across studies should sum to 100%, '
                         f'total provided is {percentage}%.')}

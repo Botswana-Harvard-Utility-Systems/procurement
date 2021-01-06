@@ -20,12 +20,21 @@ class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
             'fields': (
                 'request_approval',
                 'request_to',
+                'request_reason',
                 'date_reviewed',
                 'status',
                 'comment', )}),
         )
 
     autocomplete_fields = ['request_to', ]
+
+    radio_fields = {'request_reason': admin.VERTICAL}
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        context['adminform'].form.fields['request_approval'].queryset = \
+            RequestApproval.objects.filter(id=request.GET.get('request_approval'))
+        return super(RequestAdmin, self).render_change_form(
+            request, context, *args, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
         fields = super().get_readonly_fields(request, obj)
@@ -34,7 +43,8 @@ class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
                 id=request.GET.get('request_approval')).request_by
             if get_user(request) == request_by:
                 fields = ('status', ) + fields
-
+            else:
+                fields = ('request_to', 'request_reason') + fields
         return fields
 
 

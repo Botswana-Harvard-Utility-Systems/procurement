@@ -6,21 +6,29 @@ from smtplib import SMTPException
 
 from bhp_personnel.models import Notifications
 from .proxy_user import ProxyUser
+from .purchase_order import PurchaseOrder
 from .purchase_requisition import PurchaseRequisition
 from .request_approval import Request, RequestApproval
 
 
 @receiver(post_save, weak=False, sender=PurchaseRequisition)
+@receiver(post_save, weak=False, sender=PurchaseOrder)
 def create_request_approval(sender, instance, raw, created, **kwargs):
     if not raw:
         if created:
+            if sender.__name__ == 'PurchaseRequisition':
+                document_id = instance.prf_number
+                request_by = instance.request_by
+            else:
+                document_id = instance.order_number
+                request_by = get_prf_field(instance.prf_number, 'request_by')
             try:
                 RequestApproval.objects.get(
-                    document_id=instance.prf_number)
+                    document_id=document_id)
             except RequestApproval.DoesNotExist:
                 RequestApproval.objects.create(
-                    document_id=instance.prf_number,
-                    request_by=instance.request_by)
+                    document_id=document_id,
+                    request_by=request_by)
 
 
 @receiver(post_save, weak=False, sender=Request,
@@ -63,11 +71,16 @@ def send_email_notification(
         Notifications.objects.create(
             email=instance.request_to.email, success_status=True)
         if status == 'new':
-            value = f'{instance.request_to.first_name} {instance.request_to.last_name}'
             instance.status = 'pending'
+            if instance.request_reason == 'prf_approval':
+                value = instance.request_to
+                update_prf_field(
+                    prf_number=instance.request_approval.document_id, field_name='approval_by', value=value)
+            elif instance.request_reason == 'confirm_funds':
+                value = instance.request_to
+                update_prf_field(
+                    prf_number=instance.request_approval.document_id, field_name='funds_confirmed', value=value)
             instance.save()
-            update_prf_field(
-                prf_number=instance.request_approval.document_id, field_name='approval_by', value=value)
         elif status == 'approved':
             update_prf_field(
                 prf_number=instance.request_approval.document_id, field_name='approved',
@@ -91,3 +104,12 @@ def update_prf_field(prf_number=None, field_name=None, value=None):
     else:
         setattr(prf, field_name, value)
         prf.save()
+
+
+def get_prf_field(prf_number=None, field_name=None):
+    try:
+        prf = PurchaseRequisition.objects.get(prf_number=prf_number)
+    except PurchaseRequisition.DoesNotExist:
+        raise ValidationError('Purchase Requisition matching id does not exist')
+    else:
+        return getattr(prf, field_name, None)

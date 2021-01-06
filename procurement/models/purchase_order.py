@@ -53,6 +53,20 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
+    first_approval = models.CharField(
+        verbose_name='Authorised by (1)',
+        max_length=100,
+        help_text='First and Last name',
+        blank=True,
+        null=True,)
+
+    second_approval = models.CharField(
+        verbose_name='Authorised by (2)',
+        max_length=100,
+        help_text='First and Last name',
+        blank=True,
+        null=True,)
+
     file = models.FileField(
         upload_to='purchase_orders/', blank=True, null=True)
 

@@ -9,6 +9,7 @@ from edc_search.model_mixins import SearchSlugModelMixin as Base
 from .model_mixins import PurchaseItemMixin
 from .proxy_user import ProxyUser
 from .study_protocol import StudyProtocol
+from .supplier import Supplier
 from ..choices import ALLOCATION_TYPE
 from ..identifiers import PurchaseRequisitionIdentifier
 
@@ -55,24 +56,25 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         choices=ALLOCATION_TYPE,
         max_length=5)
 
+    selected_vendor = models.ForeignKey(Supplier, on_delete=models.PROTECT)
+
     request_by = models.ForeignKey(
         ProxyUser, on_delete=models.CASCADE)
 
-    approval_by = models.CharField(
-        verbose_name='Approved by',
-        max_length=100,
-        help_text='First and Last name',
+    approval_by = models.ForeignKey(
+        ProxyUser, on_delete=models.CASCADE,
+        related_name='approval_by',
         blank=True,
-        null=True,)
+        null=True)
 
     approved = models.BooleanField(default=False, editable=False)
 
-    funds_confirmed = models.CharField(
+    funds_confirmed = models.ForeignKey(
+        ProxyUser, on_delete=models.CASCADE,
         verbose_name='Availability of funds confirmed by',
-        max_length=100,
+        related_name='funds_confirmed',
         blank=True,
-        null=True,
-        help_text='First and Last name')
+        null=True)
 
     objects = PurchaseRequisitionManager()
 

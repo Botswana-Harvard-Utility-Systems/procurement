@@ -35,3 +35,11 @@ ALLOCATION_TYPE = (
     (SOLE, 'Sole'),
     (SPLIT, 'Split'),
 )
+
+REQUEST_REASON = (
+    ('prf_approval', 'Purchase requisition approval'),
+    ('confirm_funds', 'Confirm availability of funds'),
+    ('po_auth_one', 'Purchase order authorisation (1)'),
+    ('po_auth_two', 'Purchase order authorisation (2)'),
+    ('invoice_auth', 'Invoice authorisation'),
+)

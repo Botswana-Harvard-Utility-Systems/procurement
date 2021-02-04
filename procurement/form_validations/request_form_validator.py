@@ -41,12 +41,9 @@ class RequestFormValidator(FormCalculationsMixin, FormValidator):
 
         self.check_new_or_pending_request(request_approval)
 
-        self.check_approved_request(request_approval, request_to)
+        self.check_request_reason(request_approval, request_reason)
 
-        self.required_if(
-            'rejected',
-            field='status',
-            field_required='comment')
+        self.check_approved_request(request_approval, request_to)
 
     def check_new_or_pending_request(self, request_approval):
         qs = self.request_model_cls.objects.filter(
@@ -69,6 +66,19 @@ class RequestFormValidator(FormCalculationsMixin, FormValidator):
                    f'{request_to.first_name} {request_to.last_name} has already '
                    'approved a request for this purchase. If this is a second request, '
                    'Please forward it to a different individual.'}
+            self._errors.update(msg)
+            raise ValidationError(msg)
+
+    def check_request_reason(self, request_approval, reason):
+        try:
+            self.request_model_cls.objects.get(
+                request_approval=request_approval,
+                request_reason=reason)
+        except self.request_model_cls.DoesNotExist:
+            pass
+        else:
+            msg = {'request_reason':
+                   f'Request for {reason} has already been posted.'}
             self._errors.update(msg)
             raise ValidationError(msg)
 

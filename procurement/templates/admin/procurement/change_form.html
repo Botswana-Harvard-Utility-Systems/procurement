@@ -1,5 +1,7 @@
 {% extends 'edc_model_admin/admin/change_form.html' %}
 {% load static %}
+{% load edc_base_extras edc_admin_modify %}
+{% load i18n admin_urls %}
 
 {% block extrastyle %}{{ block.super }}
   
@@ -76,5 +78,20 @@
 {% endblock field_sets %}
 
 {% block submit_buttons_bottom %}
-    {{ block.super }}
+	{% if review %}
+	  <div class="submit-row">
+	   <input type="submit" value="{% trans 'Approve' %}" class="default" name="_approve" />
+	   <input type="submit" title="Leave form without saving" value="{% trans 'Cancel' %}" name="_cancel" />
+	   <input type="submit" title="Reject Request" value="{% trans 'Reject' %}" name="_reject" />
+	  </div>
+	{% elif retry %}
+		<div class="submit-row">
+	   	<input type="submit" value="{% trans 'Rerequest' %}" class="default" name="_retry" />
+	   	<input type="submit" title="Leave form without saving" value="{% trans 'Cancel' %}" name="_cancel" />
+	  	</div>
+	{% else %}
+	   {% edc_submit_row %}
+	{% endif %}
+	
+	  {% revision_row %}
 {% endblock %}

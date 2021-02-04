@@ -9,11 +9,6 @@ from .supplier import Supplier
 
 class GoodsReceivedNote(SiteModelMixin, BaseUuidModel):
 
-    grn_number = models.CharField(
-        verbose_name='Goods received number',
-        max_length=50,
-        unique=True,)
-
     order_number = models.CharField(
         verbose_name='Purchase order number',
         max_length=50,)
@@ -34,11 +29,7 @@ class GoodsReceivedNote(SiteModelMixin, BaseUuidModel):
     delivered_by = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'{self.grn_number}, for order {self.order_number}'
-
-    def save(self, *args, **kwargs):
-        self.received_by = f'{self.request.user.first_name} {self.request.user.last_name}'
-        super().save(*args, **kwargs)
+        return f'Goods received for order {self.order_number}'
 
     class Meta:
         app_label = 'procurement'

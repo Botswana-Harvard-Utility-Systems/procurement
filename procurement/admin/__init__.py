@@ -5,8 +5,10 @@ from .goods_received_note_admin import GoodsReceivedNoteAdmin
 from .invoice_admin import InvoiceAdmin
 from .study_protocol_admin import StudyProtocolAdmin
 from .proxy_user_admin import ProxyUserAdmin
+from .purchase_invoice_admin import PurchaseInvoiceAdmin
 from .purchase_order_admin import PurchaseOrderAdmin
 from .purchase_requisition_admin import PurchaseRequisitionAdmin
-from .request_approval_admin import RequestApprovalAdmin
+from .request_approval_admin import RequestAdmin
+from .signature_admin import SignatureAdmin
 from .supplier_admin import SupplierAdmin
 from .vendor_justification_admin import VendorJustificationAdmin

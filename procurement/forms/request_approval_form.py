@@ -49,6 +49,13 @@ class RequestForm(FormValidatorMixin, forms.ModelForm):
 
     form_validator_cls = RequestFormValidator
 
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.request.POST.get('_reject'):
+            if not cleaned_data.get('comment'):
+                msg = {'comment': 'Please specify reason for rejecting request.'}
+                raise forms.ValidationError(msg)
+
     class Meta:
         model = Request
         fields = '__all__'

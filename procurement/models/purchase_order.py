@@ -8,6 +8,7 @@ from edc_search.model_mixins import SearchSlugManager
 from edc_search.model_mixins import SearchSlugModelMixin as Base
 
 from .company import Company
+from .proxy_user import ProxyUser
 from ..identifiers import PurchaseOrderIdentifier
 
 
@@ -53,19 +54,19 @@ class PurchaseOrder(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
 
     agent = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
-    first_approval = models.CharField(
-        verbose_name='Authorised by (1)',
-        max_length=100,
-        help_text='First and Last name',
+    first_approver = models.ForeignKey(
+        ProxyUser, on_delete=models.CASCADE,
+        related_name='first_approver',
         blank=True,
-        null=True,)
+        null=True)
 
-    second_approval = models.CharField(
-        verbose_name='Authorised by (2)',
-        max_length=100,
-        help_text='First and Last name',
+    second_approver = models.ForeignKey(
+        ProxyUser, on_delete=models.CASCADE,
+        related_name='second_approver',
         blank=True,
-        null=True,)
+        null=True)
+
+    authorised = models.BooleanField(default=False, editable=False)
 
     file = models.FileField(
         upload_to='purchase_orders/', blank=True, null=True)

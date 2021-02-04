@@ -9,14 +9,6 @@ from ..models import GoodsReceivedNote
 class GoodsReceivedNoteForm(
         SiteModelFormMixin, FormValidatorMixin, forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(GoodsReceivedNoteForm, self).__init__(*args, **kwargs)
-        self.fields['grn_number'].required = False
-
-    grn_number = forms.CharField(
-        label='Goods received number',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-
     order_number = forms.CharField(
         label='Order number',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))

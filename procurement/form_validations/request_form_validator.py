@@ -71,17 +71,18 @@ class RequestFormValidator(FormCalculationsMixin, FormValidator):
             raise ValidationError(msg)
 
     def check_request_reason(self, request_approval, reason):
-        try:
-            self.request_model_cls.objects.get(
-                request_approval=request_approval,
-                request_reason=reason)
-        except self.request_model_cls.DoesNotExist:
-            pass
-        else:
-            msg = {'request_reason':
-                   f'Request for {reason} has already been posted.'}
-            self._errors.update(msg)
-            raise ValidationError(msg)
+        if self.add_form:
+            try:
+                self.request_model_cls.objects.get(
+                    request_approval=request_approval,
+                    request_reason=reason)
+            except self.request_model_cls.DoesNotExist:
+                pass
+            else:
+                msg = {'request_reason':
+                       f'Request for {reason} has already been posted.'}
+                self._errors.update(msg)
+                raise ValidationError(msg)
 
     def check_justification_exists(self, prf_number):
         total_costs = self.items_total_cost(prf_number)

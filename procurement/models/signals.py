@@ -136,6 +136,9 @@ def send_email_notification(
                 instance.save()
             else:
                 instance.status = status
+                if instance.status == 'approved':
+                    signature = user_signature(instance.request_to)
+                    instance.approval_sign = signature
 
 
 def check_user(user):
@@ -183,7 +186,7 @@ def user_signature(user):
     except Signature.DoesNotExist:
         raise ValidationError(
             'Authorising person does not have signature captured, please '
-            'contact admin for this')
+            'contact admin for assistance on this.')
     else:
         return signature.signature
 

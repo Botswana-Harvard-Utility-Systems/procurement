@@ -76,7 +76,11 @@ class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         if obj and obj.status == 'approved':
             return False
+        if ((obj and obj.status == 'rejected') and
+                get_user(request).id != obj.request_approval.request_by.id):
+            return False
         return True
+
 
 #     def redirect_url(self, request, obj, post_url_continue=None):
 #         redirect_url = super().redirect_url(

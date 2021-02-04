@@ -46,13 +46,14 @@ class RequestFormValidator(FormCalculationsMixin, FormValidator):
         self.check_approved_request(request_approval, request_to)
 
     def check_new_or_pending_request(self, request_approval):
-        qs = self.request_model_cls.objects.filter(
-            request_approval=request_approval, status__in=['new', 'pending'])
-        if qs and qs.count() > 1:
-            msg = {'__all__':
-                   'There is already a new or pending approval request for this purchase.'}
-            self._errors.update(msg)
-            raise ValidationError(msg)
+        if self.add_form:
+            qs = self.request_model_cls.objects.filter(
+                request_approval=request_approval, status__in=['new', 'pending'])
+            if qs and qs.count() > 1:
+                msg = {'__all__':
+                       'There is already a new or pending approval request for this purchase.'}
+                self._errors.update(msg)
+                raise ValidationError(msg)
 
     def check_approved_request(self, request_approval, request_to):
         try:

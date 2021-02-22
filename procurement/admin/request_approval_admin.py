@@ -8,6 +8,9 @@ from .modeladmin_mixins import ModelAdminMixin
 from ..admin_site import procurement_admin
 from ..forms import RequestApprovalForm, RequestForm
 from ..models import RequestApproval, Request
+from django.urls.base import reverse
+from django.urls.exceptions import NoReverseMatch
+from edc_model_admin.model_admin_next_url_redirect_mixin import ModelAdminNextUrlRedirectError
 
 
 @admin.register(Request, site=procurement_admin)
@@ -56,10 +59,11 @@ class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         request_by = RequestApproval.objects.get(
             id=request.GET.get('request_approval')).request_by
-        if get_user(request).id == int(request.GET.get('request_to')):
-            extra_context = {'review': True}
-        if get_user(request) == request_by and request.GET.get('status') == 'rejected':
-            extra_context = {'retry': True}
+        if request.GET.get('status') != 'approved':
+            if get_user(request).id == int(request.GET.get('request_to')):
+                extra_context = {'review': True}
+            if get_user(request) == request_by and request.GET.get('status') == 'rejected':
+                extra_context = {'retry': True}
         return super().change_view(
             request, object_id, form_url=form_url, extra_context=extra_context)
 
@@ -81,22 +85,22 @@ class RequestAdmin(ModelAdminMixin, admin.ModelAdmin):
             return False
         return True
 
-
-#     def redirect_url(self, request, obj, post_url_continue=None):
-#         redirect_url = super().redirect_url(
-#             request, obj, post_url_continue=post_url_continue)
-#         if request.GET.dict().get('next'):
-#             url_name = request.GET.dict().get('next').split(',')[0]
-#             attrs = request.GET.dict().get('next').split(',')[1:]
-#             if 'order_number' in attrs:
-#                 options = {attrs[attrs.index('order_number')]:
-#                            request.GET.dict().get('order_number')}
-#                 try:
-#                     redirect_url = reverse(url_name, kwargs=options)
-#                 except NoReverseMatch as e:
-#                     raise ModelAdminNextUrlRedirectError(
-#                         f'{e}. Got url_name={url_name}, kwargs={options}.')
-#         return redirect_url
+    def redirect_url(self, request, obj, post_url_continue=None):
+        redirect_url = super().redirect_url(
+            request, obj, post_url_continue=post_url_continue)
+        if request.GET.dict().get('next'):
+            attrs = request.GET.dict().get('next').split(',')[1:]
+            order_number = request.GET.dict().get('order_number', '')
+            if order_number:
+                url_name = 'procurement_dashboard:purchase_order_report_url'
+                options = {attrs[attrs.index('order_number')]:
+                           request.GET.dict().get('order_number')}
+                try:
+                    redirect_url = reverse(url_name, kwargs=options)
+                except NoReverseMatch as e:
+                    raise ModelAdminNextUrlRedirectError(
+                        f'{e}. Got url_name={url_name}, kwargs={options}.')
+        return redirect_url
 
 
 class RequestApprovalAdmin(ModelAdminMixin, admin.ModelAdmin):

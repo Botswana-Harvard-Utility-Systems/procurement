@@ -24,5 +24,5 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
             request, obj, post_url_continue=post_url_continue)
         if request.GET.dict().get('request_type'):
             request_type_option = request.GET.dict().get('request_type')
-            redirect_url = f'{redirect_url}?request_type={request_type_option}'
+            redirect_url = f'{redirect_url}?request_type={request_type_option}&f=all'
         return redirect_url

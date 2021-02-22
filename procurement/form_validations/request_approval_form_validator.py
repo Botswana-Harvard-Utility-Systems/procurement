@@ -17,9 +17,10 @@ class RequestApprovalFormValidator(FormCalculationsMixin, FormValidator):
     def validate_vendor_justification_exists(self):
         prf_number = self.cleaned_data.get('document_id')
 
-        total_cost_accum = self.items_total_cost(prf_number)
-        if total_cost_accum > 5000.00:
-            self.check_vendor_justification_form(prf_number, total_cost_accum)
+        if self.is_purchase_requisition(prf_number):
+            total_cost_accum = self.items_total_cost(prf_number)
+            if total_cost_accum > 5000.00:
+                self.check_vendor_justification_form(prf_number, total_cost_accum)
 
     def check_vendor_justification_form(self, prf_number, cost):
         try:

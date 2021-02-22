@@ -25,6 +25,7 @@ class PurchaseRequisitionItemAdmin(TabularInlineMixin, admin.TabularInline):
                 'item_code',
                 'quantity_ordered',
                 'unit_price',
+                'discount',
                 'total_price_excl',
                 'vat',
                 'total_price_incl', )}),
@@ -91,6 +92,9 @@ class PurchaseRequisitionAdmin(ModelAdminMixin, admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         user_created = obj.user_created if obj else None
+        approved = obj.approved if obj else False
         if user_created and user_created != get_user(request).username:
+            return False
+        if approved:
             return False
         return True

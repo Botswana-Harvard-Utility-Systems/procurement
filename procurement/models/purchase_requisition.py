@@ -48,9 +48,9 @@ class PurchaseRequisition(SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
         verbose_name='Requisition date',
         default=get_utcnow)
 
-    reason = models.CharField(
+    reason = models.TextField(
         verbose_name='Reason for request',
-        max_length=100)
+        max_length=200)
 
     allocation_type = models.CharField(
         choices=ALLOCATION_TYPE,

@@ -42,4 +42,5 @@ REQUEST_REASON = (
     ('po_auth_one', 'Purchase order authorisation (1)'),
     ('po_auth_two', 'Purchase order authorisation (2)'),
     ('invoice_auth', 'Invoice authorisation'),
+    ('executive_approval', 'Executive Approval')
 )

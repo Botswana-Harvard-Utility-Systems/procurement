@@ -47,6 +47,7 @@ class CreditCardPurchaseAdmin(ModelAdminMixin, admin.ModelAdmin):
         if change:
             if request.POST.get('_approve'):
                 obj.status = 'approved'
+                obj.approved = True
             elif request.POST.get('_reject'):
                 obj.status = 'rejected'
             elif request.POST.get('_retry'):
@@ -58,11 +59,24 @@ class CreditCardPurchaseAdmin(ModelAdminMixin, admin.ModelAdmin):
         obj.save()
         super().save_model(request, obj, form, change)
 
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = {'request_auth': True}
+        return super().add_view(request, form_url=form_url, extra_context=extra_context)
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
-        if not request.GET.get('approved'):
+        obj = self.model.objects.get(id=object_id)
+        if not obj.approved:
             if get_user(request).id == int(request.GET.get('request_by')):
-                extra_context = {'request': True}
-            if get_user(request) == request.GET.get('approval_by'):
-                extra_context = {'approve': True}
+                extra_context = {'pending_auth': True,
+                                 'request_auth': True}
+            if get_user(request) == obj.card_holder:
+                extra_context = {'review': True}
+        else:
+            extra_context = {'edc_readonly': 1}
         return super().change_view(
             request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and not obj.approved:
+            return True
+        return False

@@ -89,9 +89,16 @@
 	   	<input type="submit" value="{% trans 'Rerequest' %}" class="default" name="_retry" />
 	   	<input type="submit" title="Leave form without saving" value="{% trans 'Cancel' %}" name="_cancel" />
 	  	</div>
+	{% elif request_auth %}
+		<div class="submit-row">
+		   {% if not pending_auth %}
+		     <input type="submit" value="{% trans 'Request Authorization' %}" class="default" name="_request" />
+		   {% endif %}
+		   <input type="submit" title="Leave form without saving" value="{% trans 'Cancel' %}" name="_cancel" />
+		</div>
 	{% else %}
 	   {% edc_submit_row %}
 	{% endif %}
-	
+
 	  {% revision_row %}
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -71,11 +72,12 @@ def request_on_post_save(sender, instance, raw, created, **kwargs):
     subject = (f'Approval Request for document no. {instance.request_approval.document_id}')
     if not raw:
         request_approval = instance.request_approval
+        current_site = get_current_site(request=None)
         if created:
             message = (f'Dear {instance.request_to.get_full_name()} \n\n Please note'
                        f' {request_approval.request_by} is requesting your'
                        f' approval for {request_approval.document_id}'
-                       ' on the BHP Utility system https://bhp-utility-systems.bhp.org.bw. \n\n'
+                       f' on the BHP Utility system http://{current_site.domain}. \n\n'
                        'Good day :).')
             from_email = 'adiphoko@bhp.org.bw'
             send_email_notification(
@@ -84,7 +86,8 @@ def request_on_post_save(sender, instance, raw, created, **kwargs):
 
         elif instance.status in ['approved', 'rejected']:
             message = (f'Dear {request_approval.request_by} \n\n Please be informed '
-                       f'Document no. {request_approval.document_id} has been {instance.status}.')
+                       f'Document no. {request_approval.document_id} has been {instance.status}.'
+                       f'Visit http://{current_site.domain} for further details.')
             from_email = 'adiphoko@bhp.org.bw'
             user = check_user(request_approval.request_by)
             send_email_notification(
@@ -95,7 +98,7 @@ def request_on_post_save(sender, instance, raw, created, **kwargs):
             message = (f'Dear {instance.request_to.get_full_name()} \n\n Please note'
                        f' {request_approval.request_by} is re-requesting your'
                        f' approval for {request_approval.document_id}'
-                       ' on the BHP Utility system https://bhp-utility-systems.bhp.org.bw. \n\n'
+                       f' on the BHP Utility system http://{current_site.domain}. \n\n'
                        'Good day :).')
             from_email = 'adiphoko@bhp.org.bw'
             send_email_notification(
@@ -144,7 +147,7 @@ def send_email_notification(
                         update_obj_field(
                             model_cls=PurchaseOrder, identifier_field='order_number',
                             identifier_value=identifier, field_name='first_approver', value=value)
-                instance.save()
+#                 instance.save()
             else:
                 instance.status = status
                 if instance.status == 'approved':

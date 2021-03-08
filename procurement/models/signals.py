@@ -115,7 +115,7 @@ def send_email_notification(
         if status:
             if status == 'new':
                 instance.status = 'pending'
-                if instance.request_reason == 'prf_approval':
+                if instance.request_reason in 'prf_approval':
                     value = instance.request_to
                     update_prf_field(
                         prf_number=instance.request_approval.document_id, field_name='approval_by', value=value)
@@ -133,6 +133,17 @@ def send_email_notification(
                     update_obj_field(
                         model_cls=PurchaseOrder, identifier_field='order_number',
                         identifier_value=instance.request_approval.document_id, field_name='second_approver', value=value)
+                elif instance.request_reason == 'executive_approval':
+                    identifier = instance.request_approval.document_id
+                    value = instance.request_to
+                    if is_purchase_requisition(identifier):
+                        update_obj_field(
+                            model_cls=PurchaseRequisition, identifier_field='prf_number',
+                            identifier_value=identifier, field_name='approval_by', value=value)
+                    else:
+                        update_obj_field(
+                            model_cls=PurchaseOrder, identifier_field='order_number',
+                            identifier_value=identifier, field_name='first_approver', value=value)
                 instance.save()
             else:
                 instance.status = status

@@ -16,7 +16,7 @@ from ..models import PurchaseRequisition, PurchaseRequisitionItem, Quotation
 class PurchaseRequisitionItemAdmin(TabularInlineMixin, admin.TabularInline):
     model = PurchaseRequisitionItem
     form = PurchaseRequisitionItemForm
-    extra = 1
+    extra = 0
 
     fieldsets = (
         (None, {
@@ -35,7 +35,7 @@ class PurchaseRequisitionItemAdmin(TabularInlineMixin, admin.TabularInline):
 class QuotationAdmin(TabularInlineMixin, admin.TabularInline):
     model = Quotation
     form = QuotationForm
-    extra = 1
+    extra = 0
 
     fieldsets = (
         (None, {
@@ -47,7 +47,7 @@ class QuotationAdmin(TabularInlineMixin, admin.TabularInline):
 class AllocationAdmin(StackedInlineMixin, admin.StackedInline):
     model = Allocation
     form = AllocationForm
-    extra = 1
+    extra = 0
 
     fieldsets = (
         (None, {

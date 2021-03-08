@@ -1,5 +1,6 @@
 from .address import Address
 from .company import Company
+from .credit_card_purchase import CreditCardPurchase
 from .customer import Customer
 from .goods_received_note import GoodsReceivedNote, DeliveredItem
 from .invoice import Invoice, InvoiceItem

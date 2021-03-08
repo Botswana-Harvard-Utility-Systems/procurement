@@ -1,6 +1,7 @@
 from .address_admin import AddressAdmin
 from .customer_admin import CustomerAdmin
 from .company_admin import CompanyAdmin
+from .credit_card_purchase_admin import CreditCardPurchaseAdmin
 from .goods_received_note_admin import GoodsReceivedNoteAdmin
 from .invoice_admin import InvoiceAdmin
 from .study_protocol_admin import StudyProtocolAdmin

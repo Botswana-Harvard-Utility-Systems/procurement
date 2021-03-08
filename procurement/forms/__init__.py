@@ -1,5 +1,6 @@
 from .address_form import AddressForm
 from .company_form import CompanyForm
+from .credit_card_purchase_form import CreditCardPurchaseForm
 from .customer_form import CustomerForm
 from .goods_received_note_form import GoodsReceivedNoteForm, DeliveredItemForm
 from .invoice_form import InvoiceForm, InvoiceItemForm

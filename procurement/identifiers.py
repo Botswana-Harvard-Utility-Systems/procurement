@@ -6,8 +6,15 @@ class PurchaseOrderIdentifier(SimpleSequentialIdentifier):
     prefix = 'BHP'
 
 
+class CreditCardPurchaseIdentifier(SimpleUniqueIdentifier):
+
+    random_string_length = 5
+    identifier_type = 'ccpid'
+    template = 'CCP{device_id}{random_string}'
+
+
 class PurchaseRequisitionIdentifier(SimpleUniqueIdentifier):
-    random_string_length = 8
+    random_string_length = 5
     identifier_type = 'prfid'
     template = 'PRF{device_id}{random_string}'
 

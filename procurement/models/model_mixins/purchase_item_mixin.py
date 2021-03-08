@@ -13,6 +13,7 @@ class PurchaseItemMixin(models.Model):
     unit_price = models.DecimalField(decimal_places=2, max_digits=10)
 
     discount = models.DecimalField(
+        verbose_name='DISCOUNT (%)',
         decimal_places=2, max_digits=10,
         default=Decimal('0.00'),
         help_text='Percentage (%) discount')
@@ -20,6 +21,7 @@ class PurchaseItemMixin(models.Model):
     total_price_excl = models.DecimalField(decimal_places=2, max_digits=10)
 
     vat = models.DecimalField(
+        verbose_name='VAT (%)',
         decimal_places=2, max_digits=10,
         default=Decimal('0.00'),
         help_text='Please use the percentage (%) value')

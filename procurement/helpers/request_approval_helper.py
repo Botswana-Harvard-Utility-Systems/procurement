@@ -15,11 +15,13 @@ class RequestApprovalHelper(object):
         if self.purchase_requisition:
             approved = self.check_prf_approval()
         elif self.purchase_order:
-            approved = self.check_first_auth() or self.check_second_auth()
+            approved = self.check_first_auth() or self.check_second_auth() or self.check_execute_approval()
         return approved
 
     def check_prf_approval(self):
         if self.status == 'approved':
+            if self.request_reason == 'executive_approval':
+                return True
             if self.check_second_request():
                 return True
         return False
@@ -73,6 +75,11 @@ class RequestApprovalHelper(object):
                     return True
                 else:
                     return False
+        return False
+
+    def check_execute_approval(self):
+        if self.request_reason == 'executive_approval' and self.status == 'approved':
+                return True
         return False
 
     @property

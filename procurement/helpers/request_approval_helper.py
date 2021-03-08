@@ -27,7 +27,7 @@ class RequestApprovalHelper(object):
         return False
 
     def check_second_request(self):
-        request = self.request()
+        request = self.request
         if request and request.status == 'approved':
             return True
         return False

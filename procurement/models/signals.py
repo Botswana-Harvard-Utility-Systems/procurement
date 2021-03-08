@@ -147,7 +147,7 @@ def send_email_notification(
                         update_obj_field(
                             model_cls=PurchaseOrder, identifier_field='order_number',
                             identifier_value=identifier, field_name='first_approver', value=value)
-#                 instance.save()
+                instance.save()
             else:
                 instance.status = status
                 if instance.status == 'approved':
